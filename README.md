@@ -1,3 +1,3 @@
 # watson-example-reducer
-##Thou shalt not steal
+## Thou shalt not steal
 
