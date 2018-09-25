@@ -24,6 +24,7 @@ While this should work with any NLP system out there, it has been tested only ag
 * Ideas for the future
     * Is there a way to find the better cluster representant?
     * Add support for Damerau-Levenshtein distance
+    * Is it possible to add a "Deploy to IBM Cloud Button"?
 
 ## KNOWN BUGS
 * None (so far)
