@@ -1,2 +1,3 @@
-# nlp-intent-optimizer
-Thou shalt not steal
+# watson-example-reducer
+##Thou shalt not steal
+
