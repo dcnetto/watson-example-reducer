@@ -29,3 +29,10 @@ While this should work with any NLP system out there, it has been tested only ag
 ## KNOWN BUGS
 * None (so far)
 
+# Results
+
+## Option 1
+1. Sort all examples alphabetically
+2. Loop through the list checking every example against Watson
+3. If classified incorrectly or with a low confidence score (<=80%), add the example to the intent
+4. By definition, all examples not trained, will be classified correctly with a confidence score >80%
