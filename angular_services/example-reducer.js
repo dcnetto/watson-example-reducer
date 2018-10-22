@@ -28,11 +28,11 @@ async function getIntentExamples(workspace_id, intent, page_limit = 500) {
             } else {
                 let examples = [];
                 res.examples.forEach(element => {
-                    examples.push(element.text);                           
+                    examples.push(element.text);
                 });
                 resolve(examples);
             }
-        });        
+        });
     });
 }
 
@@ -45,7 +45,7 @@ async function updateIntent(workspace_id, intent, examples) {
         };
 
         assistant.updateIntent(params, function(err, res) {
-            if (err) {                
+            if (err) {
                 reject(err);
             } else {
                 resolve(res);
@@ -59,7 +59,7 @@ async function getWorkspaceStatus(workspace_id) {
         const params = {
             workspace_id: workspace_id,
         };
-        
+
         assistant.getWorkspace(params, function(err, res) {
             if (err) {
               reject(err);
@@ -78,8 +78,8 @@ async function runEvery(func, params, interval = 5) {
         var current = new Date().getTime();
         if ((current - start)/1000 > interval) {
             var start = new Date().getTime();
-            status = await func(params);   
-        }            
+            status = await func(params);
+        }
     } while (status != 'Available');
     return true;
 }
@@ -110,28 +110,21 @@ async function createExample(workspace_id, intent, example) {
             intent: intent,
             text: example
         };
-      
+
         assistant.createExample(params, function(err, res) {
             if (err) {
                 reject(err)
             } else {
                 resolve(res)
-            } 
+            }
         });
     })
 }
 
-async function main() {
-    // Fetch all the intent's examples 
-    let examples = await getIntentExamples(workspace_id, intent);
-    // Watson return the examples already sorted, but we will sort again, just to be sure
-    examples = examples.sort();
-    if (examples.length > 0) {
-        // Delete all examples from the intent
-        await updateIntent(workspace_id, intent, []);
-    }
-    let count = 0
+async function checkAndTrain(workspace_id, examples){
     // Loop through all examples
+    let count = 0;
+    let not_trained = []
     for (example of examples) {
         count += 1;
         // Wait until the trainning is done
@@ -140,11 +133,31 @@ async function main() {
         let result = await checkExample(workspace_id, example);
         console.log(result.intent + ' : ' + result.confidence*100 + '%');
         // We will add the example, only if classified incorrectly or with a low confidence score
-        if (result.intent != intent || result.confidence <= maxConfidence) {            
+        if (result.intent != intent || result.confidence <= maxConfidence) {
             await createExample(workspace_id, intent, example);
-        }        
+        }
+        // Else add to not_trained
+        else not_trained.push(example);
         console.log(`${count} examples done, ${examples.length - count} remaining`)
     }
+    return not_trained;
+}
+
+async function main() {
+    // Fetch all the intent's examples
+    let examples = await getIntentExamples(workspace_id, intent);
+    // Watson return the examples already sorted, but we will sort again, just to be sure
+    examples = examples.sort();
+    if (examples.length > 0) {
+        // Delete all examples from the intent
+        await updateIntent(workspace_id, intent, []);
+    }
+    // Check and train examples
+    console.log("Checking examples")
+    let not_trained = await checkAndTrain(workspace_id, examples);
+    // Recheck all not trained examples
+    console.log("Rechecking not trained examples")
+    not_trained = await checkAndTrain(workspace_id, not_trained);
 }
 
 main();
