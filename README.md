@@ -1,11 +1,15 @@
-# watson-example-reducer
+![Repo Size](https://img.shields.io/github/repo-size/dcnetto/watson-example-reducer.svg)
+![Last Commit](https://img.shields.io/github/last-commit/dcnetto/watson-example-reducer.svg)
+![License GPL](https://img.shields.io/aur/license/yaourt.svg)
+
+# Watson Example Reducer
 
 ## Thou shalt not steal
 
 While this should work with any NLP system out there, it has been tested only against IBM Watson Assistant.
 
 ## DONE
-* Nada
+* None
 
 ## DOING
 * None
